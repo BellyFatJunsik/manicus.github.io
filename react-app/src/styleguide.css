@@ -1,0 +1,29 @@
+:root {
+  --collection-1-color: rgba(33, 43, 54, 1);
+  --collection-1-number: 0px;
+  --collection-1-boolean: none;
+}
+
+/*
+
+To enable a theme in your HTML, simply add one of the following data attributes to an HTML element, like so:
+
+<body data-collection-1-mode="mode-1">
+    <!-- the rest of your content -->
+</body>
+
+You can apply the theme on any DOM node, not just the `body`
+
+*/
+
+[data-collection-1-mode="mode-1"] {
+  --collection-1-color: rgba(33, 43, 54, 1);
+}
+
+[data-collection-1-mode="mode-2"] {
+  --collection-1-color: rgba(0, 167, 111, 1);
+}
+
+[data-collection-1-mode="mode-3"] {
+  --collection-1-color: rgba(0, 184, 217, 1);
+}
