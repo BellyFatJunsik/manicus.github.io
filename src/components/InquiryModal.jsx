@@ -64,11 +64,11 @@ const InquiryModal = ({ isOpen, onClose }) => {
 
     try {
       // 서버리스 함수를 통해 이메일 전송
-      // 프로덕션: Vercel 서버리스 함수 사용
-      // 개발: 로컬 백엔드 서버 사용
-      const apiUrl = process.env.NODE_ENV === 'production' 
-        ? '/api/send-email'  // Vercel 서버리스 함수
-        : (process.env.REACT_APP_API_URL || 'http://localhost:3001/api/send-email');  // 로컬 개발
+      // Vercel: /api/send-email 자동 생성 (api/send-email.js 파일)
+      // 로컬 개발: 백엔드 서버 사용
+      const apiUrl = import.meta.env.PROD 
+        ? '/api/send-email'  // Vercel 서버리스 함수 (프로덕션)
+        : (import.meta.env.VITE_API_URL || 'http://localhost:3001/api/send-email');  // 로컬 개발
       
       const response = await fetch(apiUrl, {
         method: 'POST',
