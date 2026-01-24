@@ -1,18 +1,8 @@
-// Vercel Serverless Function
-// 이 파일은 Vercel에 배포하면 자동으로 서버리스 함수로 작동합니다
+import { Resend } from 'resend';
 
-const nodemailer = require('nodemailer');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-module.exports = async (req, res) => {
-  // CORS 설정
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -20,22 +10,9 @@ module.exports = async (req, res) => {
   try {
     const { companyName, userName, phoneNumber, emailAddress, inquiryContent } = req.body;
 
-    // Gmail SMTP 설정
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER || 'gfccjs80@gmail.com',
-        pass: process.env.GMAIL_APP_PASSWORD || 'ntiydmjbjyezzzdf',
-      },
-    });
-
-    // 수신 이메일 주소
-    const toEmail = process.env.RECEIVE_EMAIL || 'contact@manicus.co.kr';
-
-    // 이메일 내용
-    const mailOptions = {
-      from: process.env.GMAIL_USER || 'gfccjs80@gmail.com', // Gmail 주소
-      to: toEmail,
+    const { data, error } = await resend.emails.send({
+      from: 'contact@manicus.co.kr',
+      to: 'ceo@manicus.co.kr',
       replyTo: emailAddress,
       subject: `상담 문의 - ${companyName}`,
       html: `
@@ -47,23 +24,15 @@ module.exports = async (req, res) => {
         <p><strong>문의내용:</strong></p>
         <p>${inquiryContent || '(문의 내용 없음)'}</p>
       `,
-      text: `
-        상담 문의가 접수되었습니다
-        
-        회사명: ${companyName}
-        이름: ${userName}
-        휴대폰번호: ${phoneNumber}
-        이메일주소: ${emailAddress}
-        문의내용: ${inquiryContent || '(문의 내용 없음)'}
-      `,
-    };
+    });
 
-    // 이메일 전송
-    await transporter.sendMail(mailOptions);
+    if (error) {
+      throw error;
+    }
 
-    res.status(200).json({ success: true, message: '이메일이 성공적으로 전송되었습니다.' });
+    return res.status(200).json({ success: true });
   } catch (error) {
     console.error('이메일 전송 오류:', error);
-    res.status(500).json({ success: false, message: '이메일 전송에 실패했습니다.', error: error.message });
+    return res.status(500).json({ success: false, error: error.message });
   }
-};
+}
