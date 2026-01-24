@@ -1,10 +1,25 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const apiKey = process.env.RESEND_API_KEY;
+
+if (!apiKey) {
+  console.error('RESEND_API_KEY 환경 변수가 설정되지 않았습니다.');
+}
+
+const resend = new Resend(apiKey);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // 환경 변수 확인
+  if (!apiKey) {
+    console.error('RESEND_API_KEY 환경 변수가 설정되지 않았습니다.');
+    return res.status(500).json({
+      success: false,
+      message: '서버 설정 오류: RESEND_API_KEY가 설정되지 않았습니다.',
+    });
   }
 
   try {

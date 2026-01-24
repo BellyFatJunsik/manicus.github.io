@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/send-email",
-      "destination": "/api/send-email.cjs"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
