@@ -66,4 +66,4 @@ module.exports = async (req, res) => {
     console.error('이메일 전송 오류:', error);
     res.status(500).json({ success: false, message: '이메일 전송에 실패했습니다.', error: error.message });
   }
-}
+};
