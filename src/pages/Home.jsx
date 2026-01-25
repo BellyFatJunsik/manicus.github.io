@@ -80,62 +80,74 @@ const Home = ({ openModal }) => {
           <div data-uid="jweHgAz3GIXld13H" className="text-wrapper-7">Technology</div>
         </div>
 
-        <img 
-          data-uid="BSQKf7cEKuwOKSqo" 
-          style={{
-            position: 'absolute',
-            top: '342px',
-            left: 'calc((100vw - 1400px) / 2 + 790px)',
-            width: '189px',
-            height: '180px',
-            aspectRatio: '1.05',
-            transform: 'scale(1.7)'
-          }} 
-          src="/m.svg"
-          alt="M"
-        />
-        <img 
-          data-uid="0dNPNpnbVihOE2wJ" 
-          style={{
-            position: 'absolute',
-            top: '92px',
-            left: 'calc((100vw - 1400px) / 2 + 960px)',
-            width: '189px',
-            height: '180px',
-            aspectRatio: '1.05',
-            transform: 'scale(1.7)'
-          }} 
-          src="/n.svg"
-          alt="N"
-        />
-        <img 
-          data-uid="5ABJxA3FLbyXOAz5" 
-          style={{
-            position: 'absolute',
-            top: '328px',
-            left: 'calc((100vw - 1400px) / 2 + 1097px)',
-            width: '189px',
-            height: '180px',
-            aspectRatio: '1.05',
-            transform: 'scale(1.7)'
-          }} 
-          src="/c.svg"
-          alt="C"
-        />
-        <img 
-          data-uid="Zy3gSYTCxmJDcX9H" 
-          style={{
-            position: 'absolute',
-            top: '74px',
-            left: 'calc((100vw - 1400px) / 2 + 1220px)',
-            width: '209px',
-            height: '180px',
-            aspectRatio: '1.05',
-            transform: 'scale(1.7)'
-          }} 
-          src="/s.svg"
-          alt="S"
-        />
+        <div className="mncs-graphics-container desktop-only">
+          <img 
+            data-uid="BSQKf7cEKuwOKSqo" 
+            style={{
+              position: 'absolute',
+              top: '342px',
+              left: 'calc((100vw - 1400px) / 2 + 790px)',
+              width: '189px',
+              height: '180px',
+              aspectRatio: '1.05',
+              transform: 'scale(1.7)'
+            }} 
+            src="/m.svg"
+            alt="M"
+            className="hero-mncs-m"
+          />
+          <img 
+            data-uid="0dNPNpnbVihOE2wJ" 
+            style={{
+              position: 'absolute',
+              top: '92px',
+              left: 'calc((100vw - 1400px) / 2 + 960px)',
+              width: '189px',
+              height: '180px',
+              aspectRatio: '1.05',
+              transform: 'scale(1.7)'
+            }} 
+            src="/n.svg"
+            alt="N"
+            className="hero-mncs-n"
+          />
+          <img 
+            data-uid="5ABJxA3FLbyXOAz5" 
+            style={{
+              position: 'absolute',
+              top: '328px',
+              left: 'calc((100vw - 1400px) / 2 + 1097px)',
+              width: '189px',
+              height: '180px',
+              aspectRatio: '1.05',
+              transform: 'scale(1.7)'
+            }} 
+            src="/c.svg"
+            alt="C"
+            className="hero-mncs-c"
+          />
+          <img 
+            data-uid="Zy3gSYTCxmJDcX9H" 
+            style={{
+              position: 'absolute',
+              top: '74px',
+              left: 'calc((100vw - 1400px) / 2 + 1220px)',
+              width: '209px',
+              height: '180px',
+              aspectRatio: '1.05',
+              transform: 'scale(1.7)'
+            }} 
+            src="/s.svg"
+            alt="S"
+            className="hero-mncs-s"
+          />
+        </div>
+        <div className="mncs-graphics-container mobile-only">
+          <img src="/m.svg" alt="M" className="hero-mncs-mobile" />
+          <img src="/n.svg" alt="N" className="hero-mncs-mobile" />
+          <img src="/c.svg" alt="C" className="hero-mncs-mobile" />
+          <img src="/s.svg" alt="S" className="hero-mncs-mobile" />
+        </div>
       </div>
 
       {/* Our Services 섹션 */}
@@ -150,16 +162,21 @@ const Home = ({ openModal }) => {
                 alt="웹사이트 제작"
               />
               <div data-uid="SHENmFaWajnPMxf3" className="text-wrapper-8">웹사이트 · 홈페이지 제작</div>
-              <img 
-                data-uid="xyYkPzZicW2fnBY3" 
+              <svg 
                 className="line" 
-                src="https://c.animaapp.com/DaKYKUSd/img/line-2-2.svg"
-                alt="구분선"
-              />
+                width="409" 
+                height="1" 
+                viewBox="0 0 409 1" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ display: 'block' }}
+              >
+                <line y1="0.5" x2="409" y2="0.5" stroke="white" strokeWidth="0.5"/>
+              </svg>
               <p data-uid="LwiDZfwEZQDvyLBA" className="SEO">
                 원페이지 랜딩부터 기업·기관 홈페이지, 대형 맞춤형 사이트까지 비즈니스의 목적에 맞는 웹사이트를 제작합니다.
-                기획단계부터 디자인, 개발까지 전체 제작 <br data-uid="mCJvVPJ70VxjtqII" />과정을 하나의 흐름으로 진행합니다. 반응형, SEO를 고려하여
-                설계하여 오픈 이후에도 운영하기 쉬운 <br data-uid="1UyXUqSydhu4mPbM" />웹사이트를 만듭니다.
+                기획단계부터 디자인, 개발까지 전체 제작 과정을 하나의 흐름으로 진행합니다. 반응형, SEO를 고려하여
+                설계하여 오픈 이후에도 운영하기 쉬운 웹사이트를 만듭니다.
               </p>
             </div>
             <div data-uid="g719hp4mQhAaxiAT" className="frame-7">
@@ -182,12 +199,17 @@ const Home = ({ openModal }) => {
                 alt="시스템 구축"
               />
               <p data-uid="RMK36ORFYEAFRtCR" className="text-wrapper-8">기능 개발 · 시스템 구축</p>
-              <img 
-                data-uid="9fR8ITCoUwHHWG5m" 
+              <svg 
                 className="line" 
-                src="https://c.animaapp.com/DaKYKUSd/img/line-2-2.svg"
-                alt="구분선"
-              />
+                width="409" 
+                height="1" 
+                viewBox="0 0 409 1" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ display: 'block' }}
+              >
+                <line y1="0.5" x2="409" y2="0.5" stroke="white" strokeWidth="0.5"/>
+              </svg>
               <p data-uid="RZxGBsInvXRjW6qB" className="text-wrapper-11">
                 웹사이트 기능 확장은 물론 실제 업무를 처리하는 내부 운영 시스템까지 개발합니다.<br data-uid="1HZIa7hyIZGamIom" />관리자 페이지(CMS),
                 쇼핑몰, 예약·결제 시스템부터 유통·물류 관리, 내부 관리 시스템 등 업무 목적과 운영 환경에 맞춰 구조를
@@ -213,12 +235,17 @@ const Home = ({ openModal }) => {
                 alt="운영 유지보수"
               />
               <p data-uid="yDr7AvO0oYwCvWuz" className="text-wrapper-8">운영 · 유지보수 · 인프라 지원</p>
-              <img 
-                data-uid="9eORXor3z1JUls8e" 
+              <svg 
                 className="line" 
-                src="https://c.animaapp.com/DaKYKUSd/img/line-2-2.svg"
-                alt="구분선"
-              />
+                width="409" 
+                height="1" 
+                viewBox="0 0 409 1" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ display: 'block' }}
+              >
+                <line y1="0.5" x2="409" y2="0.5" stroke="white" strokeWidth="0.5"/>
+              </svg>
               <p data-uid="YYreB4E1DumVMcqj" className="text-wrapper-11">
                 서비스 오픈 이후에도 안정적인 운영을 이어갈 수 있도록 정기 유지보수, 기능 개선을 지원합니다. 장애 발생 시
                 신속한 대응을 통해 서비스가 중단 없이 운영될 수 있도록 지원합니다. <br data-uid="YLGRSIGM8y9vW0se" />또한 도메인, 호스팅, SSL 등 기본
@@ -364,17 +391,41 @@ const Home = ({ openModal }) => {
       {/* 견적 요청 섹션 */}
       <div data-uid="EEgRPARaxYrVuBHX" className="frame-23">
         <div className="content-center">
-          <div data-uid="aWdmynsusuXAdAwS" className="frame-24">
-            <div data-uid="prrPu4HF2xdD8qrK" className="text-wrapper-22">프로젝트에 맞는 견적을 받아보세요</div>
-            <p data-uid="GPldvMqcycNR7w3o" className="text-wrapper-23">
-              작은 문의부터 큰 프로젝트까지 매니커스는 함께 고민할 준비가 되어있습니다
-            </p>
-            <img 
-              data-uid="Czvr1sR8nK573g3q" 
-              className="bitcoin-icons-arrow" 
-              src="https://c.animaapp.com/DaKYKUSd/img/bitcoin-icons-arrow-right-outline.svg"
-              alt="화살표"
-            />
+          <div className="frame-24-wrapper">
+            <div data-uid="aWdmynsusuXAdAwS" className="frame-24">
+              <div data-uid="prrPu4HF2xdD8qrK" className="text-wrapper-22">프로젝트에 맞는 견적을 받아보세요</div>
+              <p data-uid="GPldvMqcycNR7w3o" className="text-wrapper-23">
+                작은 문의부터 큰 프로젝트까지 매니커스는 함께 고민할 준비가 되어있습니다
+              </p>
+              <img 
+                data-uid="Czvr1sR8nK573g3q" 
+                className="bitcoin-icons-arrow" 
+                src="https://c.animaapp.com/DaKYKUSd/img/bitcoin-icons-arrow-right-outline.svg"
+                alt="화살표"
+              />
+            </div>
+            <div className="frame-23-mncs">
+              <img 
+                src="/m-1.svg"
+                alt="M1"
+                className="frame-23-m1"
+              />
+              <img 
+                src="/n-1.svg"
+                alt="N"
+                className="frame-23-n"
+              />
+              <img 
+                src="/c-1.svg"
+                alt="C"
+                className="frame-23-c"
+              />
+              <img 
+                src="/s-1.svg"
+                alt="S"
+                className="frame-23-s"
+              />
+            </div>
           </div>
         </div>
       </div>

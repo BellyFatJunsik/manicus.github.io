@@ -7,10 +7,31 @@
   position: relative;
   left: calc(-50vw + 50%);
   margin-left: 0;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
   z-index: 100;
   max-width: 100vw;
   overflow-x: hidden;
+  padding: 0 20px;
+}
+
+.header-container {
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-right {
+  text-align: right;
 }
 
 .PC-GNB a {
@@ -23,35 +44,33 @@
 }
 
 .PC-GNB .frame {
-  margin-top: 24.7px;
   width: 88.5px;
   height: 19.6px;
   position: relative;
-  margin-left: 39px;
   pointer-events: auto !important;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
-.PC-GNB .div {
+.PC-GNB .div.desktop-nav {
   display: flex !important;
-  margin-top: 21px;
   width: auto !important;
   min-width: 205px;
   height: 26px;
   position: relative;
-  margin-left: 90.5px;
   align-items: center;
   justify-content: flex-start; 
   row-gap: 0 !important;
+  margin: 0;
 }
 
-.PC-GNB .div > * {
-  margin: 0 !important;
+.PC-GNB .div.desktop-nav > * {
+  margin-left: 90.5px;
   padding: 0 !important;
   flex-shrink: 0;
 }
 
-.PC-GNB .div > *:not(:first-child) {
+.PC-GNB .div.desktop-nav > *:not(:first-child) {
   margin-left: 100px !important;
 }
 
@@ -69,15 +88,14 @@
   white-space: nowrap;
 }
 
-.PC-GNB .frame-2 {
+.PC-GNB .frame-2.desktop-actions {
   display: flex;
-  margin-top: 13px;
   width: 214px;
   height: 46px;
   position: relative;
-  margin-left: 730px;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .PC-GNB .text-wrapper-2 {
@@ -110,17 +128,263 @@
   font-weight: 500;
 }
 
-@media (max-width: 768px) {
-  .PC-GNB .frame-2 {
-    margin-left: 20px;
+/* 햄버거 메뉴 버튼 */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 102;
+  position: relative;
+}
+
+.hamburger-menu span {
+  width: 100%;
+  height: 2px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* 모바일 메뉴 오버레이 */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000000;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 40px 20px;
+  position: relative;
+}
+
+.mobile-menu-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #05ffad;
+  font-size: 32px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.mobile-menu-logo {
+  font-family: "Noto Sans", Helvetica;
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 60px;
+  text-decoration: none;
+}
+
+.mobile-menu-logo:hover {
+  color: #ffffff;
+}
+
+.mobile-menu-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.mobile-menu-item {
+  font-family: "Noto Sans", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mobile-menu-item:hover,
+.mobile-menu-item[aria-current="page"] {
+  color: #ffffff;
+}
+
+.mobile-menu-cta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #334BFF;
+  font-family: "Noto Sans", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  cursor: pointer;
+  margin-top: auto;
+  transition: opacity 0.2s ease;
+}
+
+.mobile-menu-cta:hover {
+  opacity: 0.8;
+}
+
+.mobile-menu-cta .arrow {
+  color: #334BFF;
+  font-size: 24px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1300px) {
+  .header-container {
+    max-width: 100%;
+    padding: 0 20px;
+  }
+
+  .PC-GNB .div.desktop-nav {
+    margin-left: 30px !important;
+  }
+
+  .PC-GNB .div.desktop-nav > *:not(:first-child) {
+    margin-left: 50px !important;
+  }
+
+  .PC-GNB .text-wrapper {
+    font-size: 15px;
+  }
+
+  .PC-GNB .text-wrapper-2 {
+    font-size: 15px;
+  }
+
+  .PC-GNB .frame-2.desktop-actions {
     width: auto;
+    gap: 15px;
   }
-  
-  .PC-GNB .div {
-    margin-left: 20px;
+
+  .PC-GNB .div-wrapper {
+    padding: 6px 12px;
   }
-  
-  .PC-GNB .div > *:not(:first-child) {
+
+  .PC-GNB .div-wrapper .text-wrapper {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .PC-GNB .div.desktop-nav {
     margin-left: 20px !important;
+  }
+
+  .PC-GNB .div.desktop-nav > *:not(:first-child) {
+    margin-left: 40px !important;
+  }
+
+  .PC-GNB .text-wrapper {
+    font-size: 14px;
+  }
+
+  .PC-GNB .text-wrapper-2 {
+    font-size: 14px;
+  }
+
+  .PC-GNB .frame-2.desktop-actions {
+    gap: 12px;
+  }
+
+  .PC-GNB .div-wrapper {
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .PC-GNB {
+    padding: 0 20px;
+  }
+
+  .header-container {
+    padding: 0;
+  }
+
+  .PC-GNB .frame-2.desktop-actions {
+    margin-left: auto;
+    margin-right: 20px;
+  }
+
+  .PC-GNB .div.desktop-nav {
+    margin-left: 30px;
+  }
+
+  .PC-GNB .div.desktop-nav > *:not(:first-child) {
+    margin-left: 40px !important;
+  }
+
+  .PC-GNB .text-wrapper {
+    font-size: 14px;
+  }
+
+  .PC-GNB .text-wrapper-2 {
+    font-size: 14px;
+  }
+
+  .PC-GNB .frame-2.desktop-actions {
+    width: auto;
+    gap: 12px;
+  }
+
+  .PC-GNB .div-wrapper {
+    padding: 5px 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .PC-GNB {
+    padding: 0 20px;
+    justify-content: space-between;
+  }
+
+  .PC-GNB .div.desktop-nav,
+  .PC-GNB .frame-2.desktop-actions {
+    display: none !important;
+  }
+
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .PC-GNB .frame {
+    margin-left: 0;
+  }
+}
+
+/* 데스크톱에서만 표시 */
+@media (min-width: 769px) {
+  .mobile-menu-overlay {
+    display: none !important;
   }
 }

@@ -1,7 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const HeroCanvas = () => {
   const canvasRef = useRef(null);
+  const cursorRef = useRef(null);
+  const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [cursorHue, setCursorHue] = useState(0);
 
   useEffect(() => {
     const heroSection = canvasRef.current?.parentElement;
@@ -32,7 +36,7 @@ const HeroCanvas = () => {
         this.vx = (Math.random() - 0.5) * 1.5;
         this.vy = (Math.random() - 0.5) * 1.5;
         this.life = 1.0;
-        this.decay = Math.random() * 0.005 + 0.004;
+        this.decay = Math.random() * 0.001 + 0.003; // 더 오래 남도록 decay 감소
       }
 
       update() {
@@ -59,10 +63,18 @@ const HeroCanvas = () => {
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
       mouse.active = true;
+      
+      // 커서 위치 업데이트
+      setCursorPosition({
+        x: e.clientX,
+        y: e.clientY
+      });
+      setIsHovering(true);
     };
 
     const handleMouseLeave = () => {
       mouse.active = false;
+      setIsHovering(false);
     };
 
     heroSection.addEventListener('mousemove', handleMouseMove);
@@ -70,13 +82,17 @@ const HeroCanvas = () => {
 
     function animate() {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)'; // 페이드 아웃 속도 감소
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.globalCompositeOperation = 'lighten';
 
       if (mouse.active) {
-        hue = 150 + (Math.sin(Date.now() * 0.001) * 30);
+        // 무지개 색상: 시간과 마우스 위치를 조합하여 0~360도 범위로 순환
+        const timeHue = (Date.now() * 0.1) % 360;
+        const mouseHue = ((mouse.x + mouse.y) * 0.5) % 360;
+        hue = (timeHue + mouseHue * 0.3) % 360;
+        setCursorHue(hue); // 커서 색상도 업데이트
         for (let i = 0; i < 2; i++) {
           particles.push(new PaintDrop(mouse.x, mouse.y, hue));
         }
@@ -104,19 +120,41 @@ const HeroCanvas = () => {
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      id="heroCanvas"
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        zIndex: 0
-      }}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        id="heroCanvas"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}
+      />
+      <div
+        ref={cursorRef}
+        className="brush-cursor"
+        style={{
+          position: 'fixed',
+          left: cursorPosition.x,
+          top: cursorPosition.y,
+          pointerEvents: 'none',
+          zIndex: 1000,
+          opacity: isHovering ? 1 : 0,
+          transition: 'opacity 0.2s ease',
+          transform: 'translate(-50%, -50%)',
+          width: '24px',
+          height: '24px',
+          borderRadius: '50%',
+          backgroundColor: `hsl(${cursorHue}, 70%, 60%)`,
+          border: '2px solid rgba(255, 255, 255, 0.8)',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+        }}
+      />
+    </>
   );
 };
 

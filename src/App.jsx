@@ -32,7 +32,9 @@ function App() {
   return (
     <BrowserRouter basename="/">
       <div className="KOR-MAIN" data-model-id="613:48310">
-        <Header />
+
+
+        <Header openModal={openModal} />
         <Routes>
           <Route path="/" element={<Home openModal={openModal} />} />
           <Route path="/price" element={<Price openModal={openModal} />} />
