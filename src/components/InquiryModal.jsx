@@ -13,6 +13,8 @@ const InquiryModal = ({ isOpen, onClose }) => {
   });
   const [charCount, setCharCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showLoadingModal, setShowLoadingModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const modalRef = useRef(null);
   const formRef = useRef(null);
 
@@ -61,6 +63,7 @@ const InquiryModal = ({ isOpen, onClose }) => {
     if (isSubmitting) return;
     
     setIsSubmitting(true);
+    setShowLoadingModal(true);
 
     try {
       // 서버리스 함수를 통해 이메일 전송
@@ -90,8 +93,11 @@ const InquiryModal = ({ isOpen, onClose }) => {
 
       const result = await response.json();
       
-      alert('문의가 접수되었습니다. 감사합니다.');
-      onClose();
+      // 로딩 모달 숨기고 완료 모달 표시
+      setShowLoadingModal(false);
+      setShowSuccessModal(true);
+      
+      // 폼 데이터 초기화
       setFormData({
         companyName: '',
         userName: '',
@@ -103,10 +109,16 @@ const InquiryModal = ({ isOpen, onClose }) => {
       setCharCount(0);
     } catch (error) {
       console.error('이메일 전송 실패:', error);
+      setShowLoadingModal(false);
       alert(`문의 접수 중 오류가 발생했습니다: ${error.message || '알 수 없는 오류'}`);
-    } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    setIsSubmitting(false);
+    onClose();
   };
 
   const isFormValid = formData.companyName && 
@@ -118,9 +130,86 @@ const InquiryModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="inquiry-modal" ref={modalRef}>
-      <div className="inquiry-modal-overlay"></div>
-      <div className="inquiry-modal-content">
+    <>
+      {/* 로딩 모달 */}
+      {showLoadingModal && (
+        <div className="status-modal">
+          <div className="status-modal-overlay"></div>
+          <div className="status-modal-content">
+            <button 
+              className="status-modal-close" 
+              onClick={() => {
+                setShowLoadingModal(false);
+                setIsSubmitting(false);
+              }}
+              aria-label="모달 닫기"
+            >
+              &times;
+            </button>
+            <div className="status-modal-body">
+              <div className="status-spinner">
+                <svg className="spinner" viewBox="0 0 50 50">
+                  <circle
+                    className="spinner-path"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"
+                    strokeWidth="4"
+                  />
+                </svg>
+              </div>
+              <div className="status-text">접수중</div>
+              <button 
+                className="status-confirm-btn"
+                onClick={() => {
+                  setShowLoadingModal(false);
+                  setIsSubmitting(false);
+                }}
+                disabled
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 완료 모달 */}
+      {showSuccessModal && (
+        <div className="status-modal">
+          <div className="status-modal-overlay"></div>
+          <div className="status-modal-content">
+            <button 
+              className="status-modal-close" 
+              onClick={handleSuccessConfirm}
+              aria-label="모달 닫기"
+            >
+              &times;
+            </button>
+            <div className="status-modal-body">
+              <div className="status-success-icon">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" fill="#334BFF"/>
+                  <path d="M8 12L11 15L16 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <div className="status-text">접수 완료</div>
+              <button 
+                className="status-confirm-btn active"
+                onClick={handleSuccessConfirm}
+              >
+                확인
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 문의 모달 */}
+      <div className="inquiry-modal" ref={modalRef}>
+        <div className="inquiry-modal-overlay"></div>
+        <div className="inquiry-modal-content">
         <button 
           className="inquiry-modal-close" 
           onClick={onClose}
@@ -266,6 +355,7 @@ const InquiryModal = ({ isOpen, onClose }) => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 

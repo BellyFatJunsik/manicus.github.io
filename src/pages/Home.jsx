@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useSEO } from '../hooks/useSEO';
 import HeroCanvas from '../components/HeroCanvas';
+import RainbowCanvas from '../components/RainbowCanvas';
 
 const Home = ({ openModal }) => {
+  const quoteSectionRef = useRef(null);
+
   useSEO({
     title: '매니커스 - 비즈니스 맞춤 웹사이트 제작 및 시스템 구축',
     description: '매니커스는 비즈니스의 목적과 맥락을 이해하고, 기획부터 디자인, 개발까지 전문가가 함께하는 웹사이트 제작 및 시스템 구축 서비스를 제공합니다.',
@@ -389,19 +392,23 @@ const Home = ({ openModal }) => {
       </div>
 
       {/* 견적 요청 섹션 */}
-      <div data-uid="EEgRPARaxYrVuBHX" className="frame-23">
-        <div className="content-center">
+      <div data-uid="EEgRPARaxYrVuBHX" className="frame-23" ref={quoteSectionRef} style={{ position: 'relative' }}>
+        <RainbowCanvas containerRef={quoteSectionRef} />
+        <div className="content-center" style={{ position: 'relative', zIndex: 1 }}>
           <div className="frame-24-wrapper">
             <div data-uid="aWdmynsusuXAdAwS" className="frame-24">
               <div data-uid="prrPu4HF2xdD8qrK" className="text-wrapper-22">프로젝트에 맞는 견적을 받아보세요</div>
               <p data-uid="GPldvMqcycNR7w3o" className="text-wrapper-23">
                 작은 문의부터 큰 프로젝트까지 매니커스는 함께 고민할 준비가 되어있습니다
               </p>
+              {/* 화살표 클릭 시 문의하기 오픈 */}
               <img 
                 data-uid="Czvr1sR8nK573g3q" 
                 className="bitcoin-icons-arrow" 
                 src="https://c.animaapp.com/DaKYKUSd/img/bitcoin-icons-arrow-right-outline.svg"
                 alt="화살표"
+                onClick={() => openModal()}
+                style={{ cursor: 'pointer' }}
               />
             </div>
             <div className="frame-23-mncs">
