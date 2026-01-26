@@ -117,6 +117,8 @@
   border-radius: 4px;
   font-family: "Noto Sans", Helvetica;
   font-size: 14px;
+  background-color: #ffffff;
+  color: #333;
 }
 
 .inquiry-field input:focus {
@@ -132,6 +134,8 @@
   font-size: 14px;
   min-height: 120px;
   resize: vertical;
+  background-color: #ffffff;
+  color: #333;
 }
 
 .inquiry-field textarea:focus {
