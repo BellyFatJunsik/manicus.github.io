@@ -182,7 +182,12 @@ const Home = ({ openModal }) => {
                 설계하여 오픈 이후에도 운영하기 쉬운 웹사이트를 만듭니다.
               </p>
             </div>
-            <div data-uid="g719hp4mQhAaxiAT" className="frame-7">
+            <div 
+              data-uid="g719hp4mQhAaxiAT" 
+              className="frame-7"
+              onClick={() => openModal()}
+              style={{ cursor: 'pointer' }}
+            >
               <div data-uid="fbH0z9p4KZF3s0X5" className="text-wrapper-9">견적 문의</div>
               <img 
                 data-uid="awNGECY8LcoruQY4" 
@@ -219,7 +224,12 @@ const Home = ({ openModal }) => {
                 설계하고 구현합니다.
               </p>
             </div>
-            <div data-uid="OJL8UFrpTeZzpSGU" className="frame-7">
+            <div 
+              data-uid="OJL8UFrpTeZzpSGU" 
+              className="frame-7"
+              onClick={() => openModal()}
+              style={{ cursor: 'pointer' }}
+            >
               <div data-uid="JpralN7nSSk5WxdI" className="text-wrapper-12">견적 문의</div>
               <img 
                 data-uid="k9MRFVVNgc7CKBvr" 
@@ -255,7 +265,12 @@ const Home = ({ openModal }) => {
                 인프라 환경을 서비스 특성에 맞게 구성하고 관리합니다.
               </p>
             </div>
-            <div data-uid="otPxNboSwyOfn22G" className="frame-7">
+            <div 
+              data-uid="otPxNboSwyOfn22G" 
+              className="frame-7"
+              onClick={() => openModal()}
+              style={{ cursor: 'pointer' }}
+            >
               <div data-uid="cNOyRzcDAyPIFk32" className="text-wrapper-12">견적 문의</div>
               <img 
                 data-uid="fbx7l95zRk7Dfl2T" 
