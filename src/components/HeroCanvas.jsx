@@ -27,6 +27,8 @@ const HeroCanvas = () => {
     window.addEventListener('resize', resize);
     resize();
 
+    const MAX_PARTICLES = 150; // 최대 파티클 개수 제한
+
     class PaintDrop {
       constructor(x, y, color) {
         this.x = x;
@@ -46,6 +48,12 @@ const HeroCanvas = () => {
         this.life -= this.decay;
       }
 
+      isDead() {
+        return this.life <= 0 || 
+               this.x < -50 || this.x > canvas.width + 50 || 
+               this.y < -50 || this.y > canvas.height + 50;
+      }
+
       draw() {
         if (this.life <= 0) return;
         ctx.beginPath();
@@ -58,7 +66,14 @@ const HeroCanvas = () => {
       }
     }
 
+    let lastMouseUpdate = 0;
+    const MOUSE_THROTTLE = 16; // ~60fps로 제한
+
     const handleMouseMove = (e) => {
+      const now = Date.now();
+      if (now - lastMouseUpdate < MOUSE_THROTTLE) return;
+      lastMouseUpdate = now;
+
       const rect = heroSection.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
@@ -87,22 +102,34 @@ const HeroCanvas = () => {
 
       ctx.globalCompositeOperation = 'lighten';
 
-      if (mouse.active) {
+      if (mouse.active && particles.length < MAX_PARTICLES) {
         // 무지개 색상: 시간과 마우스 위치를 조합하여 0~360도 범위로 순환
         const timeHue = (Date.now() * 0.1) % 360;
         const mouseHue = ((mouse.x + mouse.y) * 0.5) % 360;
         hue = (timeHue + mouseHue * 0.3) % 360;
         setCursorHue(hue); // 커서 색상도 업데이트
-        for (let i = 0; i < 2; i++) {
+        
+        // 파티클 개수가 최대치에 가까우면 1개만 추가, 아니면 2개
+        const addCount = particles.length > MAX_PARTICLES * 0.8 ? 1 : 2;
+        for (let i = 0; i < addCount; i++) {
           particles.push(new PaintDrop(mouse.x, mouse.y, hue));
         }
+      }
+
+      // 더 효율적인 파티클 제거: 화면 밖으로 나간 파티클도 제거
+      // 파티클이 너무 많으면 오래된 것부터 제거
+      if (particles.length > MAX_PARTICLES) {
+        particles = particles.slice(-MAX_PARTICLES);
       }
 
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.update();
-        p.draw();
-        if (p.life <= 0) particles.splice(i, 1);
+        if (p.isDead()) {
+          particles.splice(i, 1);
+        } else {
+          p.draw();
+        }
       }
       animationFrameId = requestAnimationFrame(animate);
     }
