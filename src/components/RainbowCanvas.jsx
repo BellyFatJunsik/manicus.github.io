@@ -105,8 +105,18 @@ const RainbowCanvas = ({ containerRef }) => {
       mouse.active = false;
     };
 
+    const handleDoubleClick = () => {
+      // 더블클릭 시 모든 파티클 제거
+      particles = [];
+      // 캔버스도 즉시 지우기
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    };
+
     container.addEventListener('mousemove', handleMouseMove);
     container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('dblclick', handleDoubleClick);
 
     function animate() {
       ctx.globalCompositeOperation = 'destination-out';
@@ -141,6 +151,7 @@ const RainbowCanvas = ({ containerRef }) => {
       window.removeEventListener('resize', resize);
       container.removeEventListener('mousemove', handleMouseMove);
       container.removeEventListener('mouseleave', handleMouseLeave);
+      container.removeEventListener('dblclick', handleDoubleClick);
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
       }
