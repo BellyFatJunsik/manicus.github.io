@@ -14,6 +14,8 @@ const RainbowCanvas = ({ containerRef }) => {
     let prevMouse = { x: -100, y: -100 }; // 이전 마우스 위치
     let hue = 0;
     let animationFrameId;
+    let lastParticleTime = 0; // 마지막 파티클 생성 시간
+    const PARTICLE_INTERVAL = 50; // 100ms마다 생성 (1초에 10개)
 
     const resize = () => {
       const rect = container.getBoundingClientRect();
@@ -24,7 +26,7 @@ const RainbowCanvas = ({ containerRef }) => {
     window.addEventListener('resize', resize);
     resize();
 
-    const MAX_PARTICLES = 400; // 최대 파티클 개수 제한 (두 번째 캔버스는 조금 더 적게)
+    const MAX_PARTICLES = 100; // 최대 파티클 개수 제한 (두 번째 캔버스는 조금 더 적게)
 
     class PaintDrop {
       constructor(x, y, color) {
@@ -32,8 +34,8 @@ const RainbowCanvas = ({ containerRef }) => {
         this.y = y;
         this.size = Math.random() * 20 + 35; // 더 큰 크기 (10-25 → 15-35)
         this.color = color;
-        this.vx = (Math.random() - 0.5) * 1.5; // 더 빠른 속도 (1.5 → 2.5)
-        this.vy = (Math.random() - 0.5) * 2.5;
+        this.vx = (Math.random() - 0.5) * 0.001; // 더 빠른 속도 (1.5 → 2.5)
+        this.vy = (Math.random() - 0.5) * 0.001;
         this.life = 1.0;
         this.decay = Math.random() * 0.0008 + 0.0015; // 더 오래 남도록 (decay 감소)
       }
@@ -66,7 +68,7 @@ const RainbowCanvas = ({ containerRef }) => {
     }
 
     let lastMouseUpdate = 0;
-    const MOUSE_THROTTLE = 16; // ~60fps로 제한
+    const MOUSE_THROTTLE = 0.1; // ~60fps로 제한
 
     const handleMouseMove = (e) => {
       const now = Date.now();
@@ -76,22 +78,6 @@ const RainbowCanvas = ({ containerRef }) => {
       const rect = container.getBoundingClientRect();
       const newX = e.clientX - rect.left;
       const newY = e.clientY - rect.top;
-      
-      // 마우스가 실제로 움직였는지 확인 (최소 1px 이상 이동)
-      const moved = Math.abs(newX - prevMouse.x) > 1 || Math.abs(newY - prevMouse.y) > 1;
-      
-      if (moved && particles.length < MAX_PARTICLES) {
-        // 무지개 색상: 시간과 마우스 위치를 조합하여 0~360도 범위로 순환
-        const timeHue = (Date.now() * 0.1) % 360;
-        const mouseHue = ((newX + newY) * 0.5) % 360;
-        hue = (timeHue + mouseHue * 0.3) % 360;
-        
-        // 더 화사하게: 파티클을 더 많이 생성 (2-3개)
-        const addCount = particles.length > MAX_PARTICLES * 0.8 ? 2 : 3;
-        for (let i = 0; i < addCount; i++) {
-          particles.push(new PaintDrop(newX, newY, hue));
-        }
-      }
       
       // 현재 위치를 이전 위치로 저장
       prevMouse.x = newX;
@@ -125,7 +111,20 @@ const RainbowCanvas = ({ containerRef }) => {
 
       ctx.globalCompositeOperation = 'lighten';
 
-      // 파티클은 handleMouseMove에서만 생성됨 (마우스가 움직일 때만)
+      // 마우스가 활성화되어 있고, 1초에 10개씩 파티클 생성 (100ms마다 1개)
+      if (mouse.active && particles.length < MAX_PARTICLES) {
+        const now = Date.now();
+        if (now - lastParticleTime >= PARTICLE_INTERVAL) {
+          // 무지개 색상: 시간과 마우스 위치를 조합하여 0~360도 범위로 순환
+          const timeHue = (Date.now() * 0.1) % 360;
+          const mouseHue = ((mouse.x + mouse.y) * 0.5) % 360;
+          hue = (timeHue + mouseHue * 0.3) % 360;
+          
+          // 1초에 10개 = 100ms마다 1개씩 생성
+          particles.push(new PaintDrop(mouse.x, mouse.y, hue));
+          lastParticleTime = now;
+        }
+      }
 
       // 더 효율적인 파티클 제거: 화면 밖으로 나간 파티클도 제거
       // 파티클이 너무 많으면 오래된 것부터 제거
