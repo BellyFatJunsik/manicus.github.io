@@ -15,6 +15,7 @@ const HeroCanvas = () => {
     const ctx = canvas.getContext('2d');
     let particles = [];
     let mouse = { x: -100, y: -100, active: false };
+    let prevMouse = { x: -100, y: -100 }; // 이전 마우스 위치
     let hue = 0;
     let animationFrameId;
 
@@ -75,8 +76,31 @@ const HeroCanvas = () => {
       lastMouseUpdate = now;
 
       const rect = heroSection.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
+      const newX = e.clientX - rect.left;
+      const newY = e.clientY - rect.top;
+      
+      // 마우스가 실제로 움직였는지 확인 (최소 1px 이상 이동)
+      const moved = Math.abs(newX - prevMouse.x) > 1 || Math.abs(newY - prevMouse.y) > 1;
+      
+      if (moved && particles.length < MAX_PARTICLES) {
+        // 무지개 색상: 시간과 마우스 위치를 조합하여 0~360도 범위로 순환
+        const timeHue = (Date.now() * 0.1) % 360;
+        const mouseHue = ((newX + newY) * 0.5) % 360;
+        hue = (timeHue + mouseHue * 0.3) % 360;
+        setCursorHue(hue); // 커서 색상도 업데이트
+        
+        // 파티클 개수가 최대치에 가까우면 1개만 추가, 아니면 2개
+        const addCount = particles.length > MAX_PARTICLES * 0.8 ? 1 : 2;
+        for (let i = 0; i < addCount; i++) {
+          particles.push(new PaintDrop(newX, newY, hue));
+        }
+      }
+      
+      // 현재 위치를 이전 위치로 저장
+      prevMouse.x = newX;
+      prevMouse.y = newY;
+      mouse.x = newX;
+      mouse.y = newY;
       mouse.active = true;
       
       // 커서 위치 업데이트
@@ -102,19 +126,7 @@ const HeroCanvas = () => {
 
       ctx.globalCompositeOperation = 'lighten';
 
-      if (mouse.active && particles.length < MAX_PARTICLES) {
-        // 무지개 색상: 시간과 마우스 위치를 조합하여 0~360도 범위로 순환
-        const timeHue = (Date.now() * 0.1) % 360;
-        const mouseHue = ((mouse.x + mouse.y) * 0.5) % 360;
-        hue = (timeHue + mouseHue * 0.3) % 360;
-        setCursorHue(hue); // 커서 색상도 업데이트
-        
-        // 파티클 개수가 최대치에 가까우면 1개만 추가, 아니면 2개
-        const addCount = particles.length > MAX_PARTICLES * 0.8 ? 1 : 2;
-        for (let i = 0; i < addCount; i++) {
-          particles.push(new PaintDrop(mouse.x, mouse.y, hue));
-        }
-      }
+      // 파티클은 handleMouseMove에서만 생성됨 (마우스가 움직일 때만)
 
       // 더 효율적인 파티클 제거: 화면 밖으로 나간 파티클도 제거
       // 파티클이 너무 많으면 오래된 것부터 제거
