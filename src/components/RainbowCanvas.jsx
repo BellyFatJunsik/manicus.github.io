@@ -23,24 +23,24 @@ const RainbowCanvas = ({ containerRef }) => {
     window.addEventListener('resize', resize);
     resize();
 
-    const MAX_PARTICLES = 100; // 최대 파티클 개수 제한 (두 번째 캔버스는 조금 더 적게)
+    const MAX_PARTICLES = 400; // 최대 파티클 개수 제한 (두 번째 캔버스는 조금 더 적게)
 
     class PaintDrop {
       constructor(x, y, color) {
         this.x = x;
         this.y = y;
-        this.size = Math.random() * 15 + 10;
+        this.size = Math.random() * 20 + 15; // 더 큰 크기 (10-25 → 15-35)
         this.color = color;
-        this.vx = (Math.random() - 0.5) * 1.5;
-        this.vy = (Math.random() - 0.5) * 1.5;
+        this.vx = (Math.random() - 0.5) * 2.5; // 더 빠른 속도 (1.5 → 2.5)
+        this.vy = (Math.random() - 0.5) * 2.5;
         this.life = 1.0;
-        this.decay = Math.random() * 0.001 + 0.001;
+        this.decay = Math.random() * 0.0008 + 0.0015; // 더 오래 남도록 (decay 감소)
       }
 
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        this.size += 0.6;
+        this.size += 0.8; // 더 빠르게 커지도록 (0.6 → 0.8)
         this.life -= this.decay;
       }
 
@@ -54,7 +54,9 @@ const RainbowCanvas = ({ containerRef }) => {
         if (this.life <= 0) return;
         ctx.beginPath();
         const grad = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-        grad.addColorStop(0, `hsla(${this.color}, 70%, 60%, ${this.life * 0.4})`);
+        // 더 화사하게: 채도 85%, 밝기 70%, 투명도 증가
+        grad.addColorStop(0, `hsla(${this.color}, 85%, 70%, ${this.life * 0.6})`);
+        grad.addColorStop(0.5, `hsla(${this.color}, 80%, 65%, ${this.life * 0.3})`);
         grad.addColorStop(1, `hsla(${this.color}, 70%, 60%, 0)`);
         ctx.fillStyle = grad;
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -85,7 +87,7 @@ const RainbowCanvas = ({ containerRef }) => {
 
     function animate() {
       ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.015)'; // 더 오래 남도록 페이드 아웃 속도 감소
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.globalCompositeOperation = 'lighten';
@@ -96,8 +98,8 @@ const RainbowCanvas = ({ containerRef }) => {
         const mouseHue = ((mouse.x + mouse.y) * 0.5) % 360;
         hue = (timeHue + mouseHue * 0.3) % 360;
         
-        // 파티클 개수가 최대치에 가까우면 1개만 추가, 아니면 2개
-        const addCount = particles.length > MAX_PARTICLES * 0.8 ? 1 : 2;
+        // 더 화사하게: 파티클을 더 많이 생성 (2-3개)
+        const addCount = particles.length > MAX_PARTICLES * 0.8 ? 2 : 3;
         for (let i = 0; i < addCount; i++) {
           particles.push(new PaintDrop(mouse.x, mouse.y, hue));
         }
