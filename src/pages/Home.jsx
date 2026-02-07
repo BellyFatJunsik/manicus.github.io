@@ -7,11 +7,11 @@ const Home = ({ openModal }) => {
   const quoteSectionRef = useRef(null);
 
   useSEO({
-    title: '매니커스 - 비즈니스 맞춤 웹사이트 제작 및 시스템 구축',
-    description: '매니커스는 비즈니스의 목적과 맥락을 이해하고, 기획부터 디자인, 개발까지 전문가가 함께하는 웹사이트 제작 및 시스템 구축 서비스를 제공합니다.',
-    keywords: '웹사이트 제작, 홈페이지 제작, 시스템 구축, 웹 개발, 반응형 웹사이트, SEO 최적화, 매니커스',
-    ogImage: 'https://c.animaapp.com/DaKYKUSd/img/frame-22.svg',
-    ogUrl: window.location.href
+    title: '매니커스 - 홈페이지 제작, 전자정부 개발, 웹사이트 · 시스템 구축',
+    description: '웹사이트·홈페이지 제작: 원페이지 랜딩부터 기업·기관 홈페이지, 대형 맞춤형 사이트까지 비즈니스 목적에 맞는 웹사이트를 제작합니다. 기능 개발·시스템 구축, 운영·유지보수·인프라 지원. 기획부터 디자인, 개발까지 전문가가 함께합니다.',
+    keywords: '매니커스, 홈페이지 제작, 웹사이트 제작, 전자정부 개발, 시스템 구축, CMS, 쇼핑몰, 예약·결제 시스템, 유지보수, 반응형 웹사이트, SEO',
+    ogImage: 'https://manicus.co.kr/img/frame-22.svg',
+    ogUrl: typeof window !== 'undefined' ? window.location.href : 'https://manicus.co.kr/'
   });
 
   useEffect(() => {

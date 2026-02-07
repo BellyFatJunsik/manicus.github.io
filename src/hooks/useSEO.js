@@ -34,6 +34,17 @@ export const useSEO = ({ title, description, keywords, ogImage, ogUrl }) => {
       updateMetaTag('keywords', keywords);
     }
 
+    // Canonical URL
+    if (ogUrl) {
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute('href', ogUrl);
+    }
+
     // Open Graph
     updateMetaTag('og:title', title, true);
     updateMetaTag('og:type', 'website', true);

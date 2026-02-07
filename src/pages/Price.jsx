@@ -7,11 +7,11 @@ import '../styles/Price.css';
 
 const Price = ({ openModal }) => {
   useSEO({
-    title: '견적 및 가격 - 매니커스',
-    description: '프로젝트 유형과 범위에 따라 비용을 미리 확인해보세요. 웹사이트 제작, 기능 개발, 시스템 구축, 운영 및 유지보수 서비스의 예상 견적을 제공합니다.',
-    keywords: '웹사이트 견적, 홈페이지 가격, 시스템 구축 비용, 웹 개발 견적, 매니커스',
-    ogImage: 'https://c.animaapp.com/DaKYKUSd/img/frame-22.svg',
-    ogUrl: window.location.href
+    title: '견적 및 가격 - 매니커스 | 홈페이지 제작, 전자정부 개발',
+    description: '웹사이트·홈페이지 제작, 기능 개발·시스템 구축(CMS, 쇼핑몰, 예약·결제), 운영·유지보수 예상 견적. 원페이지형, 기본형, 중대형 홈페이지, 전자정부 프로젝트 비용 확인.',
+    keywords: '매니커스, 홈페이지 견적, 웹사이트 가격, 전자정부 개발 견적, 시스템 구축 비용, CMS 개발, 매니커스 견적',
+    ogImage: 'https://manicus.co.kr/img/frame-22.svg',
+    ogUrl: typeof window !== 'undefined' ? window.location.href : 'https://manicus.co.kr/price'
   });
 
   const [selectedItems, setSelectedItems] = useState({});
