@@ -30,6 +30,7 @@ const Home = ({ openModal }) => {
 
   return (
     <>
+      <h1 className="sr-only">매니커스 - 비즈니스 맞춤 웹사이트 제작 및 시스템 구축, 홈페이지 제작, 전자정부 개발</h1>
       <div className="frame-3" data-uid="y1UqHzhryjaIhs6R">
         <HeroCanvas />
         <img 
@@ -50,7 +51,7 @@ const Home = ({ openModal }) => {
           </div>
           <div data-uid="3jXLJdWBOKoLU5yg" className="frame-6">
             <p data-uid="GZeiVLphVctClFjX" className="p">
-              매니커스는 비즈니스의 목적과 맥락을 먼저 이해합니다
+              매니커스(Manicus)는 비즈니스의 목적과 맥락을 먼저 이해합니다
             </p>
             <p data-uid="BMeUu0ZNTBn84GTt" className="text-wrapper-5">
               기획, 디자인, 개발까지 경험 많은 전문가가 함께하고,

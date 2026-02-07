@@ -27,11 +27,11 @@ const Header = ({ openModal }) => {
       <div className="PC-GNB" role="banner">
         <div className="header-container">
           <div className="header-left">
-            <Link to="/" aria-label="MNCS 홈페이지" onClick={closeMenu}>
+            <Link to="/" aria-label="매니커스 홈페이지" onClick={closeMenu}>
               <img
                 className="frame"
                 src="https://c.animaapp.com/DaKYKUSd/img/frame-22.svg"
-                alt="MNCS 로고"
+                alt="매니커스 로고"
               />
             </Link>
             <nav className="div desktop-nav" role="navigation" aria-label="주요 메뉴">
