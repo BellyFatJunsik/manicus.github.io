@@ -371,6 +371,7 @@
   font-weight: 700;
   position: relative;
   z-index: 2;
+  color: #000000;
 }
 
 .quote-total-icon {
