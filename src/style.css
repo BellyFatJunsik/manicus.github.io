@@ -352,6 +352,7 @@ body {
 }
 
 .KOR-MAIN .SEO {
+  min-height: 150px;
   position: relative;
   align-self: stretch;
   font-family: "Noto Sans", Helvetica;

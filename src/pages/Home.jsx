@@ -189,11 +189,11 @@ const Home = ({ openModal }) => {
               onClick={() => openModal()}
               style={{ cursor: 'pointer' }}
             >
-              <div data-uid="fbH0z9p4KZF3s0X5" className="text-wrapper-9">견적 문의</div>
+              <div data-uid="fbH0z9p4KZF3s0X5" className="text-wrapper-12">견적 문의</div>
               <img 
                 data-uid="awNGECY8LcoruQY4" 
                 className="tabler-arrow-right-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/tabler-arrow-right-1.svg"
+                src="https://c.animaapp.com/DaKYKUSd/img/tabler-arrow-right-3.svg"
                 alt="화살표"
               />
             </div>

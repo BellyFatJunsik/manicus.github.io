@@ -20,6 +20,7 @@ const ServiceHeroBackground = () => {
     let mouse = { x: null, y: null };
     const MOUSE_INFLUENCE_RADIUS = 320;
     const MOUSE_ATTRACT_STRENGTH = 85;
+    const EVENT_HORIZON = 18;
 
     // 영역 2배: 반지름 배율을 2배로 확장
     const LAYERS = [
@@ -101,7 +102,10 @@ const ServiceHeroBackground = () => {
           const toMouseX = mouse.x - dotX;
           const toMouseY = mouse.y - dotY;
           const dist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
-          if (dist < MOUSE_INFLUENCE_RADIUS && dist > 1) {
+          if (dist <= EVENT_HORIZON) {
+            targetDx = mouse.x - baseX - dx;
+            targetDy = mouse.y - baseY - dy;
+          } else if (dist < MOUSE_INFLUENCE_RADIUS) {
             const strength = (1 - dist / MOUSE_INFLUENCE_RADIUS) * MOUSE_ATTRACT_STRENGTH;
             const nx = toMouseX / dist;
             const ny = toMouseY / dist;
@@ -110,8 +114,21 @@ const ServiceHeroBackground = () => {
           }
         }
         const LERP = 0.09;
-        d.mouseDx += (targetDx - d.mouseDx) * LERP;
-        d.mouseDy += (targetDy - d.mouseDy) * LERP;
+        if (mouse.x != null && mouse.y != null) {
+          const toMouseX = mouse.x - (baseX + dx + d.mouseDx);
+          const toMouseY = mouse.y - (baseY + dy + d.mouseDy);
+          const dist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
+          if (dist <= EVENT_HORIZON) {
+            d.mouseDx = targetDx;
+            d.mouseDy = targetDy;
+          } else {
+            d.mouseDx += (targetDx - d.mouseDx) * LERP;
+            d.mouseDy += (targetDy - d.mouseDy) * LERP;
+          }
+        } else {
+          d.mouseDx += (targetDx - d.mouseDx) * LERP;
+          d.mouseDy += (targetDy - d.mouseDy) * LERP;
+        }
         const x = baseX + dx + d.mouseDx;
         const y = baseY + dy + d.mouseDy;
 
