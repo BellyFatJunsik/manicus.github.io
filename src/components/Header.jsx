@@ -17,9 +17,7 @@ const Header = ({ openModal }) => {
   const handleInquiryClick = (e) => {
     e.preventDefault();
     closeMenu();
-    if (openModal) {
-      openModal();
-    }
+    if (openModal) openModal();
   };
 
   return (

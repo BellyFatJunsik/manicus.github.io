@@ -12,10 +12,14 @@ const ServiceHeroBackground = () => {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    const parent = canvas.parentElement;
     let animationId;
     let width = 0;
     let height = 0;
     const startTime = Date.now();
+    let mouse = { x: null, y: null };
+    const MOUSE_INFLUENCE_RADIUS = 320;
+    const MOUSE_ATTRACT_STRENGTH = 85;
 
     // 영역 2배: 반지름 배율을 2배로 확장
     const LAYERS = [
@@ -48,13 +52,15 @@ const ServiceHeroBackground = () => {
           const phaseY = Math.random() * Math.PI * 2;
           const speedX = 0.3 + Math.random() * 0.8;
           const speedY = 0.3 + Math.random() * 0.8;
-          dots.push({ radius, angle, size, alpha, hasGlow, driftAmount, phaseX, phaseY, speedX, speedY });
+          dots.push({
+            radius, angle, size, alpha, hasGlow, driftAmount, phaseX, phaseY, speedX, speedY,
+            mouseDx: 0, mouseDy: 0,
+          });
         }
       });
     };
 
     const resize = () => {
-      const parent = canvas.parentElement;
       if (!parent) return;
       const rect = parent.getBoundingClientRect();
       width = rect.width;
@@ -88,8 +94,26 @@ const ServiceHeroBackground = () => {
         const baseY = cy + d.radius * Math.sin(d.angle);
         const dx = d.driftAmount * Math.sin(t * d.speedX + d.phaseX);
         const dy = d.driftAmount * Math.cos(t * d.speedY + d.phaseY);
-        const x = baseX + dx;
-        const y = baseY + dy;
+        const dotX = baseX + dx + d.mouseDx;
+        const dotY = baseY + dy + d.mouseDy;
+        let targetDx = 0, targetDy = 0;
+        if (mouse.x != null && mouse.y != null) {
+          const toMouseX = mouse.x - dotX;
+          const toMouseY = mouse.y - dotY;
+          const dist = Math.sqrt(toMouseX * toMouseX + toMouseY * toMouseY);
+          if (dist < MOUSE_INFLUENCE_RADIUS && dist > 1) {
+            const strength = (1 - dist / MOUSE_INFLUENCE_RADIUS) * MOUSE_ATTRACT_STRENGTH;
+            const nx = toMouseX / dist;
+            const ny = toMouseY / dist;
+            targetDx = nx * strength;
+            targetDy = ny * strength;
+          }
+        }
+        const LERP = 0.09;
+        d.mouseDx += (targetDx - d.mouseDx) * LERP;
+        d.mouseDy += (targetDy - d.mouseDy) * LERP;
+        const x = baseX + dx + d.mouseDx;
+        const y = baseY + dy + d.mouseDy;
 
         if (d.hasGlow) {
           const r2 = d.size * 3;
@@ -128,12 +152,27 @@ const ServiceHeroBackground = () => {
       animationId = requestAnimationFrame(draw);
     };
 
+    const onMouseMove = (e) => {
+      if (!parent) return;
+      const rect = parent.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    };
+    const onMouseLeave = () => {
+      mouse.x = null;
+      mouse.y = null;
+    };
+
     resize();
     window.addEventListener('resize', resize);
+    parent.addEventListener('mousemove', onMouseMove);
+    parent.addEventListener('mouseleave', onMouseLeave);
     draw();
 
     return () => {
       window.removeEventListener('resize', resize);
+      parent.removeEventListener('mousemove', onMouseMove);
+      parent.removeEventListener('mouseleave', onMouseLeave);
       if (animationId) cancelAnimationFrame(animationId);
     };
   }, []);

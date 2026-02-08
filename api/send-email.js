@@ -35,6 +35,18 @@ function getHtmlBody(data) {
   `;
 }
 
+function getChatHtmlBody(data) {
+  const { chatTranscript, guestEmail, userName } = data;
+  return `
+    <h2>💬 상담 대화 수신</h2>
+    <p><strong>고객 이메일 (답변용):</strong> ${guestEmail || '-'}</p>
+    <p><strong>이름:</strong> ${userName || '-'}</p>
+    <hr />
+    <strong>대화 내용</strong>
+    <pre style="white-space: pre-wrap; background:#f5f5f5; padding:16px; border-radius:8px;">${chatTranscript || '(내용 없음)'}</pre>
+  `;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -48,6 +60,42 @@ export default async function handler(req, res) {
   }
 
   try {
+    const toEmail = process.env.RECEIVE_EMAIL || 'ceo@manicus.co.kr';
+    const fromEmail = process.env.GMAIL_USER || 'contact@manicus.co.kr';
+
+    if (req.body.type === 'chat') {
+      const { chatTranscript, guestEmail, userName } = req.body;
+      if (!guestEmail || !chatTranscript) {
+        return res.status(400).json({
+          success: false,
+          message: '이메일과 대화 내용이 필요합니다.',
+        });
+      }
+      const subject = `[상담 대화] ${userName || '고객'} - ${guestEmail}`;
+      const html = getChatHtmlBody({ chatTranscript, guestEmail, userName });
+      const text = `고객 이메일: ${guestEmail}\n이름: ${userName || '-'}\n\n대화 내용:\n${chatTranscript}`;
+
+      if (useGmail && transporter) {
+        await transporter.sendMail({
+          from: fromEmail,
+          to: toEmail,
+          replyTo: guestEmail,
+          subject,
+          html,
+          text,
+        });
+      } else if (resend) {
+        await resend.emails.send({
+          from: 'Manicus 문의 <contact@manicus.co.kr>',
+          to: [toEmail],
+          reply_to: guestEmail,
+          subject,
+          html,
+        });
+      }
+      return res.status(200).json({ success: true });
+    }
+
     const {
       companyName,
       userName,
@@ -63,8 +111,6 @@ export default async function handler(req, res) {
       });
     }
 
-    const toEmail = process.env.RECEIVE_EMAIL || 'ceo@manicus.co.kr';
-    const fromEmail = process.env.GMAIL_USER || 'contact@manicus.co.kr';
     const subject = `홈페이지 문의 - ${companyName || '회사명 없음'}`;
     const html = getHtmlBody({
       companyName,
