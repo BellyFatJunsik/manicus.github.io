@@ -36,9 +36,9 @@ const Header = ({ openModal }) => {
             </Link>
             <nav className="div desktop-nav" role="navigation" aria-label="주요 메뉴">
               <Link
-                to="/"
+                to="/service"
                 className="text-wrapper"
-                aria-current={location.pathname === '/' ? 'page' : undefined}
+                aria-current={location.pathname === '/service' ? 'page' : undefined}
               >
                 Service
               </Link>
@@ -95,10 +95,10 @@ const Header = ({ openModal }) => {
           </Link>
           <nav className="mobile-menu-nav">
             <Link
-              to="/"
+              to="/service"
               className="mobile-menu-item"
               onClick={closeMenu}
-              aria-current={location.pathname === '/' ? 'page' : undefined}
+              aria-current={location.pathname === '/service' ? 'page' : undefined}
             >
               Service
             </Link>

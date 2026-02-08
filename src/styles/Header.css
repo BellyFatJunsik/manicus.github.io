@@ -86,6 +86,19 @@
   letter-spacing: 0;
   line-height: 25.5px;
   white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+/* 상단 메뉴 링크: 처음부터 두껍게, 기본 0.85 / 호버 1 */
+.PC-GNB .desktop-nav a.text-wrapper {
+  font-weight: 700;
+  opacity: 0.85;
+  transition: opacity 0.2s ease;
+}
+
+.PC-GNB .desktop-nav a.text-wrapper:hover,
+.PC-GNB .desktop-nav a.text-wrapper[aria-current="page"] {
+  opacity: 1;
 }
 
 .PC-GNB .frame-2.desktop-actions {
@@ -121,11 +134,34 @@
   position: relative;
   background-color: #22c55e;
   border-radius: 4px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.PC-GNB .div-wrapper:hover {
+  background-color: #4ade80;
+}
+
+.PC-GNB .div-wrapper:hover .text-wrapper {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.PC-GNB .div-wrapper:active {
+  transform: translateY(0);
 }
 
 .PC-GNB .div-wrapper .text-wrapper {
   color: #ffffff;
   font-weight: 500;
+}
+
+.PC-GNB .text-wrapper-2 {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.PC-GNB .text-wrapper-2:hover {
+  opacity: 0.85;
 }
 
 /* 햄버거 메뉴 버튼 */

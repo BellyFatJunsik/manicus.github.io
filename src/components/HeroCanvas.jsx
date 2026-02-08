@@ -3,8 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 const HeroCanvas = () => {
   const canvasRef = useRef(null);
   const cursorRef = useRef(null);
-  const [cursorPosition, setCursorPosition] = useState({ x: -100, y: -100 });
-  const [isHovering, setIsHovering] = useState(false);
+  const [cursorPosition, setCursorPosition] = useState(() => ({
+    x: typeof window !== 'undefined' ? window.innerWidth / 2 : 0,
+    y: typeof window !== 'undefined' ? window.innerHeight / 2 : 0,
+  }));
+  const [isHovering, setIsHovering] = useState(false); // 흰 캔버스 안에서만 brush 표시
   const [cursorHue, setCursorHue] = useState(0);
 
   useEffect(() => {
@@ -14,19 +17,26 @@ const HeroCanvas = () => {
 
     const ctx = canvas.getContext('2d');
     let particles = [];
-    let mouse = { x: -100, y: -100, active: false };
-    let prevMouse = { x: -100, y: -100 }; // 이전 마우스 위치
+    let mouse = { x: 0, y: 0, active: true }; // 처음부터 활성, 위치는 resize에서 중앙으로
+    let prevMouse = { x: 0, y: 0 };
     let hue = 0;
     let animationFrameId;
-    let lastParticleTime = 0; // 마지막 파티클 생성 시간
-    const PARTICLE_INTERVAL = 30; // 100ms마다 생성 (1초에 10개)
+    let lastParticleTime = 0;
+    const PARTICLE_INTERVAL = 30;
 
     const resize = () => {
       const rect = heroSection.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
+      // 처음부터 중앙에서 효과: 마우스 위치를 중앙으로
+      mouse.x = canvas.width / 2;
+      mouse.y = canvas.height / 2;
+      mouse.active = true;
+      const centerClientX = rect.left + rect.width / 2;
+      const centerClientY = rect.top + rect.height / 2;
+      setCursorPosition({ x: centerClientX, y: centerClientY });
     };
-    
+
     window.addEventListener('resize', resize);
     resize();
 
@@ -72,6 +82,14 @@ const HeroCanvas = () => {
     let lastMouseUpdate = 0;
     const MOUSE_THROTTLE = 16; // ~60fps로 제한
 
+    const handleMouseEnter = () => {
+      // 마우스를 가져가면 깨끗한 화면에서 다시 시작
+      particles = [];
+      if (canvas.width && canvas.height) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+
     const handleMouseMove = (e) => {
       const now = Date.now();
       if (now - lastMouseUpdate < MOUSE_THROTTLE) return;
@@ -81,14 +99,12 @@ const HeroCanvas = () => {
       const newX = e.clientX - rect.left;
       const newY = e.clientY - rect.top;
       
-      // 현재 위치를 이전 위치로 저장
       prevMouse.x = newX;
       prevMouse.y = newY;
       mouse.x = newX;
       mouse.y = newY;
       mouse.active = true;
       
-      // 커서 위치 업데이트
       setCursorPosition({
         x: e.clientX,
         y: e.clientY
@@ -97,7 +113,15 @@ const HeroCanvas = () => {
     };
 
     const handleMouseLeave = () => {
-      mouse.active = false;
+      // 히어로 영역을 벗어나면: 파티클은 중앙에서 계속, brush-cursor는 숨김
+      const rect = heroSection.getBoundingClientRect();
+      mouse.x = canvas.width / 2;
+      mouse.y = canvas.height / 2;
+      mouse.active = true;
+      setCursorPosition({
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      });
       setIsHovering(false);
     };
 
@@ -110,6 +134,7 @@ const HeroCanvas = () => {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
 
+    heroSection.addEventListener('mouseenter', handleMouseEnter);
     heroSection.addEventListener('mousemove', handleMouseMove);
     heroSection.addEventListener('mouseleave', handleMouseLeave);
     heroSection.addEventListener('dblclick', handleDoubleClick);
@@ -159,6 +184,7 @@ const HeroCanvas = () => {
 
     return () => {
       window.removeEventListener('resize', resize);
+      heroSection.removeEventListener('mouseenter', handleMouseEnter);
       heroSection.removeEventListener('mousemove', handleMouseMove);
       heroSection.removeEventListener('mouseleave', handleMouseLeave);
       heroSection.removeEventListener('dblclick', handleDoubleClick);
@@ -183,26 +209,7 @@ const HeroCanvas = () => {
           zIndex: 0
         }}
       />
-      <div
-        ref={cursorRef}
-        className="brush-cursor"
-        style={{
-          position: 'fixed',
-          left: cursorPosition.x,
-          top: cursorPosition.y,
-          pointerEvents: 'none',
-          zIndex: 1000,
-          opacity: isHovering ? 1 : 0,
-          transition: 'opacity 0.2s ease',
-          transform: 'translate(-50%, -50%)',
-          width: '24px',
-          height: '24px',
-          borderRadius: '50%',
-          backgroundColor: `hsl(${cursorHue}, 70%, 60%)`,
-          border: '2px solid rgba(255, 255, 255, 0.8)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-        }}
-      />
+      
     </>
   );
 };

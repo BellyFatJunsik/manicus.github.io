@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import InquiryModal from './components/InquiryModal';
 import Home from './pages/Home';
+import Service from './pages/Service';
 import Price from './pages/Price';
 import './globals.css';
 import './styleguide.css';
@@ -37,6 +38,7 @@ function App() {
         <Header openModal={openModal} />
         <Routes>
           <Route path="/" element={<Home openModal={openModal} />} />
+          <Route path="/service" element={<Service openModal={openModal} />} />
           <Route path="/price" element={<Price openModal={openModal} />} />
         </Routes>
         <InquiryModal isOpen={isModalOpen} onClose={closeModal} />
