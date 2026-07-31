@@ -197,6 +197,7 @@ export default function InquiryModal({ isOpen, onClose }) {
               <div className="grid gap-3 sm:col-span-2">
                 <p className="text-sm font-semibold">개인정보 수집 · 이용 안내</p>
                 <div className="max-h-28 space-y-1 overflow-auto rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
+                  <p>수집·이용 주체: (주)매니커스 (793-86-03495)</p>
                   <p>수집 항목: 회사명, 이름, 휴대폰, 이메일, 문의내용</p>
                   <p>목적: 견적 산출 및 상담 응대</p>
                   <p>보유: 문의 처리 완료일로부터 1년 (법령 예외 제외)</p>
