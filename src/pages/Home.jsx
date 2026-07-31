@@ -1,459 +1,220 @@
-import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { useSEO } from '../hooks/useSEO';
-import HeroCanvas from '../components/HeroCanvas';
-import RainbowCanvas from '../components/RainbowCanvas';
+import { useReveal } from '../hooks/useReveal';
+import './Home.css';
 
-const Home = ({ openModal }) => {
-  const quoteSectionRef = useRef(null);
+const products = [
+  {
+    code: '01',
+    name: 'WMS',
+    title: '창고관리시스템',
+    desc: '입고·적치·피킹·출고·재고실사까지. 현장 운영 기준에 맞춘 전체 소스.',
+  },
+  {
+    code: '02',
+    name: 'OMS',
+    title: '주문관리시스템',
+    desc: '채널 주문 수집, 할당, 출고 연동. 물류 흐름의 전처리 레이어.',
+  },
+  {
+    code: '03',
+    name: 'INV',
+    title: '재고·자재관리',
+    desc: '로트/시리얼, 위치 재고, 안전재고. 정확도가 필요한 운영용 모듈.',
+  },
+];
+
+const steps = [
+  { n: '01', t: '요구 정리', d: '현장 프로세스와 필수 기능을 먼저 고정합니다.' },
+  { n: '02', t: '소스 제공', d: '코어 모듈 전체 소스와 문서, 실행 환경을 전달합니다.' },
+  { n: '03', t: '커스터마이징', d: '고객 환경에 맞게 화면·연동·권한을 조정합니다.' },
+  { n: '04', t: '인수·이관', d: '배포, 인수 테스트, 내부 개발팀이 이어갈 수 있게 이관합니다.' },
+];
+
+function HeroSchematic() {
+  return (
+    <div className="hero-schematic" aria-hidden="true">
+      <div className="hero-schematic__grid" />
+      <svg className="hero-schematic__svg" viewBox="0 0 960 540" fill="none">
+        <rect x="48" y="72" width="180" height="96" className="sch-box" />
+        <text x="138" y="118" textAnchor="middle" className="sch-label">INBOUND</text>
+        <text x="138" y="142" textAnchor="middle" className="sch-sub">ASN / 검수</text>
+
+        <rect x="320" y="72" width="180" height="96" className="sch-box sch-box--accent" />
+        <text x="410" y="118" textAnchor="middle" className="sch-label sch-label--on">PUTAWAY</text>
+        <text x="410" y="142" textAnchor="middle" className="sch-sub sch-sub--on">Zone / Loc</text>
+
+        <rect x="592" y="72" width="180" height="96" className="sch-box" />
+        <text x="682" y="118" textAnchor="middle" className="sch-label">INVENTORY</text>
+        <text x="682" y="142" textAnchor="middle" className="sch-sub">Lot / Qty</text>
+
+        <rect x="184" y="280" width="180" height="96" className="sch-box" />
+        <text x="274" y="326" textAnchor="middle" className="sch-label">PICK</text>
+        <text x="274" y="350" textAnchor="middle" className="sch-sub">Wave / Task</text>
+
+        <rect x="456" y="280" width="180" height="96" className="sch-box sch-box--accent" />
+        <text x="546" y="326" textAnchor="middle" className="sch-label sch-label--on">OUTBOUND</text>
+        <text x="546" y="350" textAnchor="middle" className="sch-sub sch-sub--on">Pack / Ship</text>
+
+        <path d="M228 120H320" className="sch-line" />
+        <path d="M500 120H592" className="sch-line" />
+        <path d="M410 168V220H274V280" className="sch-line" />
+        <path d="M410 220H546V280" className="sch-line" />
+        <path d="M364 328H456" className="sch-line" />
+
+        <circle cx="228" cy="120" r="3.5" className="sch-dot" />
+        <circle cx="500" cy="120" r="3.5" className="sch-dot" />
+        <circle cx="410" cy="220" r="3.5" className="sch-dot" />
+        <circle cx="364" cy="328" r="3.5" className="sch-dot" />
+
+        <g className="sch-pulse">
+          <circle cx="138" cy="120" r="6" />
+          <circle cx="410" cy="120" r="6" />
+          <circle cx="546" cy="328" r="6" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+export default function Home({ openModal }) {
+  const rootRef = useReveal();
 
   useSEO({
-    title: '매니커스 - 홈페이지 제작, 전자정부 개발, 웹사이트 · 시스템 구축',
-    description: '웹사이트·홈페이지 제작: 원페이지 랜딩부터 기업·기관 홈페이지, 대형 맞춤형 사이트까지 비즈니스 목적에 맞는 웹사이트를 제작합니다. 기능 개발·시스템 구축, 운영·유지보수·인프라 지원. 기획부터 디자인, 개발까지 전문가가 함께합니다.',
-    keywords: '매니커스, 홈페이지 제작, 웹사이트 제작, 전자정부 개발, 시스템 구축, CMS, 쇼핑몰, 예약·결제 시스템, 유지보수, 반응형 웹사이트, SEO',
-    ogImage: 'https://manicus.co.kr/img/frame-22.svg',
-    ogUrl: typeof window !== 'undefined' ? window.location.href : 'https://manicus.co.kr/'
+    title: '매니커스 — WMS · 업무시스템 소스코드',
+    description:
+      '매니커스는 WMS(창고관리시스템) 및 업무용 프로그램의 전체 소스를 제작·판매합니다. 도입부터 커스터마이징까지 기술 기반으로 지원합니다.',
+    keywords: '매니커스, WMS, 창고관리시스템, 소스코드 판매, 업무시스템, 재고관리, 물류시스템',
+    ogUrl: 'https://manicus.co.kr/',
   });
 
-  useEffect(() => {
-    const handleInquiryClick = (e) => {
-      if (e.target.closest('#inquiryBtnHero')) {
-        e.preventDefault();
-        openModal();
-      }
-    };
-
-    document.addEventListener('click', handleInquiryClick);
-    return () => {
-      document.removeEventListener('click', handleInquiryClick);
-    };
-  }, [openModal]);
-
   return (
-    <>
-      <h1 className="sr-only">매니커스 - 비즈니스 맞춤 웹사이트 제작 및 시스템 구축, 홈페이지 제작, 전자정부 개발</h1>
-      <div className="frame-3" data-uid="y1UqHzhryjaIhs6R">
-        <HeroCanvas />
-        <img 
-          data-uid="i35pmSBE22uMjkRp" 
-          className="vector" 
-          src="https://c.animaapp.com/DaKYKUSd/img/vector-13.svg" 
-          style={{zIndex: 1}}
-          alt="배경 그래픽"
-        />
-        <div data-uid="ffV3t4XgGN6eIjjJ" className="frame-4" style={{zIndex: 2}}>
-          <div data-uid="sdJOjngT7d8JZLDy" className="frame-5">
-            <div data-uid="GC6FcmSzmqmvV6An" className="text-wrapper-3">
-              비즈니스는 다 다르니까
-            </div>
-            <div data-uid="3MirNgsYrZF4LT0i" className="text-wrapper-4">
-              맞춤 설계가 기본입니다
-            </div>
-          </div>
-          <div data-uid="3jXLJdWBOKoLU5yg" className="frame-6">
-            <p data-uid="GZeiVLphVctClFjX" className="p">
-              매니커스(Manicus)는 비즈니스의 목적과 맥락을 먼저 이해합니다
-            </p>
-            <p data-uid="BMeUu0ZNTBn84GTt" className="text-wrapper-5">
-              기획, 디자인, 개발까지 경험 많은 전문가가 함께하고,
-            </p>
-            <p data-uid="MpwitY7ocbyIUaJi" className="text-wrapper-5">
-              그 결과는 실제 운영에서 증명되는 안정성으로 이어집니다
-            </p>
-          </div>
-          <div 
-            data-uid="vuFZCsV9Wn4Meawg" 
-            className="frame-7" 
-            id="inquiryBtnHero" 
-            style={{cursor: 'pointer'}}
-          >
-            <div data-uid="LFusppMo2aHATCn0" className="text-wrapper-6">상담 문의</div>
-            <img 
-              data-uid="yfSRqpcJ9rvWJAGr" 
-              className="tabler-arrow-right" 
-              src="https://c.animaapp.com/DaKYKUSd/img/tabler-arrow-right.svg"
-              alt="화살표"
-            />
-          </div>
-        </div>
-        <div 
-          data-uid="stqj9LXLJgHFrAG7" 
-          className="frame-8" 
-          style={{zIndex: 2, left: 'calc((100vw - 1400px) / 2 + 969px)'}}
-        >
-          <div data-uid="1CZSNiGMPNhDGSSC" className="tailored-by">Tailored&nbsp;&nbsp;by</div>
-          <div data-uid="jweHgAz3GIXld13H" className="text-wrapper-7">Technology</div>
-        </div>
-
-        <div className="mncs-graphics-container desktop-only">
-          <img 
-            data-uid="BSQKf7cEKuwOKSqo" 
-            style={{
-              position: 'absolute',
-              top: '342px',
-              left: 'calc((100vw - 1400px) / 2 + 790px)',
-              width: '189px',
-              height: '180px',
-              aspectRatio: '1.05',
-              transform: 'scale(1.7)'
-            }} 
-            src="/m.svg"
-            alt="M"
-            className="hero-mncs-m"
-          />
-          <img 
-            data-uid="0dNPNpnbVihOE2wJ" 
-            style={{
-              position: 'absolute',
-              top: '92px',
-              left: 'calc((100vw - 1400px) / 2 + 960px)',
-              width: '189px',
-              height: '180px',
-              aspectRatio: '1.05',
-              transform: 'scale(1.7)'
-            }} 
-            src="/n.svg"
-            alt="N"
-            className="hero-mncs-n"
-          />
-          <img 
-            data-uid="5ABJxA3FLbyXOAz5" 
-            style={{
-              position: 'absolute',
-              top: '328px',
-              left: 'calc((100vw - 1400px) / 2 + 1097px)',
-              width: '189px',
-              height: '180px',
-              aspectRatio: '1.05',
-              transform: 'scale(1.7)'
-            }} 
-            src="/c.svg"
-            alt="C"
-            className="hero-mncs-c"
-          />
-          <img 
-            data-uid="Zy3gSYTCxmJDcX9H" 
-            style={{
-              position: 'absolute',
-              top: '74px',
-              left: 'calc((100vw - 1400px) / 2 + 1220px)',
-              width: '209px',
-              height: '180px',
-              aspectRatio: '1.05',
-              transform: 'scale(1.7)'
-            }} 
-            src="/s.svg"
-            alt="S"
-            className="hero-mncs-s"
-          />
-        </div>
-        <div className="mncs-graphics-container mobile-only">
-          <img src="/m.svg" alt="M" className="hero-mncs-mobile" />
-          <img src="/n.svg" alt="N" className="hero-mncs-mobile" />
-          <img src="/c.svg" alt="C" className="hero-mncs-mobile" />
-          <img src="/s.svg" alt="S" className="hero-mncs-mobile" />
-        </div>
-      </div>
-
-      {/* Our Services 섹션 */}
-      <div data-uid="YzvdITDBtbtS37th" className="frame-9">
-        <div className="content-center">
-          <div data-uid="BMZt13heeC2ZN2hr" className="frame-10">
-            <div data-uid="7UL3dGftgYFkNHec" className="frame-11">
-              <img 
-                data-uid="YaFIjApatRoKUeaC" 
-                className="img" 
-                src="https://c.animaapp.com/DaKYKUSd/img/application.svg"
-                alt="웹사이트 제작"
-              />
-              <div data-uid="SHENmFaWajnPMxf3" className="text-wrapper-8">웹사이트 · 홈페이지 제작</div>
-              <svg 
-                className="line" 
-                width="409" 
-                height="1" 
-                viewBox="0 0 409 1" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ display: 'block' }}
-              >
-                <line y1="0.5" x2="409" y2="0.5" stroke="white" strokeWidth="0.5"/>
-              </svg>
-              <p data-uid="LwiDZfwEZQDvyLBA" className="SEO">
-                원페이지 랜딩부터 기업·기관 홈페이지, 대형 맞춤형 사이트까지 비즈니스의 목적에 맞는 웹사이트를 제작합니다.
-                기획단계부터 디자인, 개발까지 전체 제작 과정을 하나의 흐름으로 진행합니다. 반응형, SEO를 고려하여
-                설계하여 오픈 이후에도 운영하기 쉬운 웹사이트를 만듭니다.
-              </p>
-            </div>
-            <div 
-              data-uid="g719hp4mQhAaxiAT" 
-              className="frame-7"
-              onClick={() => openModal()}
-              style={{ cursor: 'pointer' }}
-            >
-              <div data-uid="fbH0z9p4KZF3s0X5" className="text-wrapper-12">견적 문의</div>
-              <img 
-                data-uid="awNGECY8LcoruQY4" 
-                className="tabler-arrow-right-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/tabler-arrow-right-3.svg"
-                alt="화살표"
-              />
-            </div>
-          </div>
-          <div data-uid="CXoScqNyf9Elvhqb" className="text-wrapper-10">Our Services</div>
-          <div data-uid="wh0QONHNJphhtYaa" className="frame-12">
-            <div data-uid="2k7W4X47DDyAS9KP" className="frame-11">
-              <img 
-                data-uid="DmvnbDuU1dfBd2oL" 
-                className="img" 
-                src="https://c.animaapp.com/DaKYKUSd/img/self-service-portal.svg"
-                alt="시스템 구축"
-              />
-              <p data-uid="RMK36ORFYEAFRtCR" className="text-wrapper-8">기능 개발 · 시스템 구축</p>
-              <svg 
-                className="line" 
-                width="409" 
-                height="1" 
-                viewBox="0 0 409 1" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ display: 'block' }}
-              >
-                <line y1="0.5" x2="409" y2="0.5" stroke="white" strokeWidth="0.5"/>
-              </svg>
-              <p data-uid="RZxGBsInvXRjW6qB" className="text-wrapper-11">
-                웹사이트 기능 확장은 물론 실제 업무를 처리하는 내부 운영 시스템까지 개발합니다.<br data-uid="1HZIa7hyIZGamIom" />관리자 페이지(CMS),
-                쇼핑몰, 예약·결제 시스템부터 유통·물류 관리, 내부 관리 시스템 등 업무 목적과 운영 환경에 맞춰 구조를
-                설계하고 구현합니다.
-              </p>
-            </div>
-            <div 
-              data-uid="OJL8UFrpTeZzpSGU" 
-              className="frame-7"
-              onClick={() => openModal()}
-              style={{ cursor: 'pointer' }}
-            >
-              <div data-uid="JpralN7nSSk5WxdI" className="text-wrapper-12">견적 문의</div>
-              <img 
-                data-uid="k9MRFVVNgc7CKBvr" 
-                className="tabler-arrow-right-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/tabler-arrow-right-3.svg"
-                alt="화살표"
-              />
-            </div>
-          </div>
-          <div data-uid="ybzCgqe6VkWAyo0F" className="frame-13">
-            <div data-uid="8GQqk4LbnBP6rQpC" className="frame-11">
-              <img 
-                data-uid="LoOYuGwb3BPiguTR" 
-                className="img" 
-                src="https://c.animaapp.com/DaKYKUSd/img/search.svg"
-                alt="운영 유지보수"
-              />
-              <p data-uid="yDr7AvO0oYwCvWuz" className="text-wrapper-8">운영 · 유지보수 · 인프라 지원</p>
-              <svg 
-                className="line" 
-                width="409" 
-                height="1" 
-                viewBox="0 0 409 1" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ display: 'block' }}
-              >
-                <line y1="0.5" x2="409" y2="0.5" stroke="white" strokeWidth="0.5"/>
-              </svg>
-              <p data-uid="YYreB4E1DumVMcqj" className="text-wrapper-11">
-                서비스 오픈 이후에도 안정적인 운영을 이어갈 수 있도록 정기 유지보수, 기능 개선을 지원합니다. 장애 발생 시
-                신속한 대응을 통해 서비스가 중단 없이 운영될 수 있도록 지원합니다. <br data-uid="YLGRSIGM8y9vW0se" />또한 도메인, 호스팅, SSL 등 기본
-                인프라 환경을 서비스 특성에 맞게 구성하고 관리합니다.
-              </p>
-            </div>
-            <div 
-              data-uid="otPxNboSwyOfn22G" 
-              className="frame-7"
-              onClick={() => openModal()}
-              style={{ cursor: 'pointer' }}
-            >
-              <div data-uid="cNOyRzcDAyPIFk32" className="text-wrapper-12">견적 문의</div>
-              <img 
-                data-uid="fbx7l95zRk7Dfl2T" 
-                className="tabler-arrow-right-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/tabler-arrow-right-3.svg"
-                alt="화살표"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Our Work 섹션 */}
-      <div data-uid="m9KzLMNmT3hqA9Md" className="frame-14">
-        <div className="content-center">
-          <div data-uid="zx8FOpbjzsDL1BuU" className="text-wrapper-13">Our Work</div>
-          <p data-uid="hwh4cks9xHi8jO36" className="text-wrapper-14">
-            매니커스는 다양한 구축 경험을 통해 업무 환경에 맞는 웹과 시스템을 안정적으로 구현해왔습니다.
+    <div ref={rootRef}>
+      <section className="hero">
+        <HeroSchematic />
+        <div className="hero__content">
+          <p className="hero__brand">MANICUS</p>
+          <h1 className="hero__title">
+            운영 시스템의
+            <br />
+            전체 소스를 판다
+          </h1>
+          <p className="hero__lead">
+            WMS를 중심으로 한 업무용 프로그램 소스코드를 제작·판매합니다.
+            블랙박스가 아닌, 직접 소유하고 확장할 수 있는 기술 자산입니다.
           </p>
-          <p data-uid="aetsUYjSvdpfkuni" className="text-wrapper-14">
-            단순한 제작사가 아닌, 운영을 함께 고민하는 기술 파트너로 일합니다.
-          </p>
-          <div data-uid="mUzSc7KR2XNhHfOD" className="frame-15">
-            <div data-uid="zV2Z9BeWxBdl6jKu" className="frame-16">
-              <div data-uid="GxQ1FOUofbKGHIii" className="group-2"></div>
-              <div data-uid="Mb90MEAuEv20gNDX" className="group-3">
-                <div data-uid="CeThgFPeRkuCUcSw" className="text-wrapper-15">공개소프트웨어</div>
-                <p data-uid="2l1sobTqoPfObXG8" className="text-wrapper-16">
-                  공공과 민간을 잇는 오픈소스 통합 서비스<br />
-                  정보 제공부터 참여까지 지원하는 포털 시스템
-                </p>
-              </div>
-            </div>
-            <div data-uid="DA8JSb1hxCNBXIgG" className="frame-17">
-              <img 
-                data-uid="x0soeVfdcn6P1wxg" 
-                className="element" 
-                src="https://c.animaapp.com/DaKYKUSd/img/-----------2025-12-28------5-46-30-1@2x.png"
-                alt="아너스글로벌"
-              />
-              <div data-uid="j0xkguNAin1ULjn6" className="frame-18">
-                <div data-uid="DdpHDVvKNm3ECr9X" className="text-wrapper-17">아너스글로벌</div>
-                <p data-uid="3pEXLb1ojYE3TkIp" className="text-wrapper-18">
-                  글로벌 물류 기업<br />
-                  : 기업 정보 제공 중심의 다국어 웹사이트 구축
-                </p>
-              </div>
-            </div>
-            <div data-uid="YMJYA7tGbtExyNuj" className="frame-17">
-              <img 
-                data-uid="k3AVJmqp2ENYyQmy" 
-                className="element" 
-                src="/site3.png"
-                alt="창고관리시스템"
-              />
-              <div data-uid="IjpYOgVik2l5tLE8" className="frame-18">
-                <div data-uid="ZQzVPD9q2TOYPKY5" className="text-wrapper-17">창고관리시스템 (WMS)</div>
-                <p data-uid="fhL0HuOpte6FGtFo" className="text-wrapper-18">
-                  중소형 물류창고에 최적화된 입고·재고·출고 전 과정을 안정적으로 관리하는 업무 시스템 구축
-                </p>
-              </div>
-            </div>
+          <div className="hero__actions">
+            <Button size="lg" onClick={openModal}>
+              도입 문의
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link to="/products">제품 보기</Link>
+            </Button>
+          </div>
+          <div className="hero__meta mono">
+            <span>SRC · FULL OWNERSHIP</span>
+            <span>WMS / OMS / INV</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* How we work 섹션 */}
-      <div data-uid="niawrp1pIOKy2f66" className="frame-19">
-        <div className="content-center">
-          <div data-uid="uEGGnQMY3519oYvr" className="text-wrapper-19">How we work</div>
-          <p data-uid="xg43LqfMnMoyzwli" className="text-wrapper-20">
-            매니커스는 결과부터 약속하지 않습니다. 대신, 문제를 정확히 이해하고 해답을 만들어가는 과정에 집중합니다.<br data-uid="aAn5yU1P5GuiK0Yb" />
-            모든 프로젝트는 아래의 흐름으로 진행됩니다.
-          </p>
-          <div data-uid="WyQNF39Imot2ISJ1" className="frame-20">
-            <div data-uid="JOh5oV2h5oiJYaLX" className="frame-21">
-              <img 
-                data-uid="QzcIqoLWneLgvody" 
-                className="scenario-scheme" 
-                src="https://c.animaapp.com/DaKYKUSd/img/scenario--scheme@2x.png"
-                alt="문제 이해"
-              />
-              <div data-uid="p1lHjISXjEEFfP0t" className="text-wrapper-21">
-                문제를 이해하는 것부터 <br data-uid="oMUO534Js8SIihvV" />시작합니다
-              </div>
-            </div>
-            <div data-uid="91a34ZlD3BajXm5X" className="frame-22">
-              <img 
-                data-uid="Ly7GxTN14AKKDB9R" 
-                className="img-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/structure--architecture@2x.png"
-                alt="구조화"
-              />
-              <p data-uid="GmMLezxPKhYRBFvk" className="text-wrapper-21">
-                복잡한 내용을 명확한<br data-uid="wbZMfAHT9JIXVkL8" />
-                방향으로 구조화합니다
-              </p>
-            </div>
-            <div data-uid="HtqS097qztpQLWHZ" className="frame-22">
-              <img 
-                data-uid="ywO2gxipOEZIRH30" 
-                className="img-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/algorithm--flow--board--canban--backlog@2x.png"
-                alt="구현"
-              />
-              <div data-uid="IQw2ojDllDh4fqen" className="text-wrapper-21">
-                보여주기보다 쓰임을<br data-uid="yrPx2leSS2Wm8MaD" />기준으로 구현합니다
-              </div>
-            </div>
-            <div data-uid="3MfRwaJLtX8hK47V" className="frame-22">
-              <img 
-                data-uid="v5SjyA0a38cHxId0" 
-                className="img-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/profile--sign-in--register--sign-up@2x.png"
-                alt="마무리"
-              />
-              <div data-uid="2yUqicSylGLXIbxp" className="text-wrapper-21">
-                디테일과 완성도를 기준으로<br data-uid="FT3sNTsCsX38waAg" />마무리합니다
-              </div>
-            </div>
-            <div data-uid="PKtuHDCxmsHOH9Qz" className="frame-22">
-              <img 
-                data-uid="D3nYRCY2OZ8hQSaj" 
-                className="img-2" 
-                src="https://c.animaapp.com/DaKYKUSd/img/team--personal--people--group@2x.png"
-                alt="파트너십"
-              />
-              <div data-uid="oNgaXDAUlWeLyZZW" className="text-wrapper-21">
-                프로젝트 이후에도<br data-uid="ZdJnPjSMq00sZszf" />연결된 파트너로 남습니다
-              </div>
-            </div>
+      <section className="section about">
+        <div className="container-page about__grid reveal">
+          <div>
+            <div className="section-label">Company</div>
+            <h2 className="section-title">기술 회사의 방식으로<br />시스템을 판다</h2>
+          </div>
+          <div className="about__copy">
+            <p>
+              매니커스는 완성된 SaaS 구독이 아니라, 고객이 직접 보유하는
+              <strong> 소스코드 단위</strong>의 시스템을 만듭니다.
+            </p>
+            <p>
+              물류·재고·주문처럼 현장 로직이 중요한 영역일수록,
+              수정 권한이 없는 패키지보다 읽을 수 있는 코드가 낫습니다.
+            </p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* 견적 요청 섹션 */}
-      <div data-uid="EEgRPARaxYrVuBHX" className="frame-23" ref={quoteSectionRef} style={{ position: 'relative' }}>
-        <RainbowCanvas containerRef={quoteSectionRef} />
-        <div className="content-center" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="frame-24-wrapper">
-            <div data-uid="aWdmynsusuXAdAwS" className="frame-24">
-              <div data-uid="prrPu4HF2xdD8qrK" className="text-wrapper-22">프로젝트에 맞는 견적을 받아보세요</div>
-              <p data-uid="GPldvMqcycNR7w3o" className="text-wrapper-23">
-                작은 문의부터 큰 프로젝트까지 매니커스는 함께 고민할 준비가 되어있습니다
-              </p>
-              {/* 화살표 클릭 시 문의하기 오픈 */}
-              <img 
-                data-uid="Czvr1sR8nK573g3q" 
-                className="bitcoin-icons-arrow" 
-                src="https://c.animaapp.com/DaKYKUSd/img/bitcoin-icons-arrow-right-outline.svg"
-                alt="화살표"
-                onClick={() => openModal()}
-                style={{ cursor: 'pointer' }}
-              />
-            </div>
-            <div className="frame-23-mncs">
-              <img 
-                src="/m-1.svg"
-                alt="M1"
-                className="frame-23-m1"
-              />
-              <img 
-                src="/n-1.svg"
-                alt="N"
-                className="frame-23-n"
-              />
-              <img 
-                src="/c-1.svg"
-                alt="C"
-                className="frame-23-c"
-              />
-              <img 
-                src="/s-1.svg"
-                alt="S"
-                className="frame-23-s"
-              />
-            </div>
+      <section className="section products-preview">
+        <div className="container-page">
+          <div className="reveal">
+            <div className="section-label">Products</div>
+            <h2 className="section-title">주요 제품 라인</h2>
+            <p className="section-lead">현장 운영에 바로 붙는 코어 모듈부터 제공합니다.</p>
+          </div>
+
+          <ul className="product-list">
+            {products.map((item, i) => (
+              <li
+                key={item.code}
+                className="product-row reveal"
+                style={{ transitionDelay: `${i * 80}ms` }}
+              >
+                <span className="product-row__code mono">{item.code}</span>
+                <div className="product-row__name">
+                  <strong>{item.name}</strong>
+                  <span>{item.title}</span>
+                </div>
+                <p className="product-row__desc">{item.desc}</p>
+              </li>
+            ))}
+          </ul>
+
+          <div className="reveal products-preview__more">
+            <Button asChild variant="outline">
+              <Link to="/products">전체 제품 스펙 →</Link>
+            </Button>
           </div>
         </div>
-      </div>
-    </>
+      </section>
+
+      <section className="section process">
+        <div className="container-page">
+          <div className="reveal">
+            <div className="section-label">Delivery</div>
+            <h2 className="section-title">납품 방식</h2>
+            <p className="section-lead">데모만 보여주는 회사와 달리, 코드와 이관을 기준으로 일합니다.</p>
+          </div>
+
+          <ol className="process-grid">
+            {steps.map((step, i) => (
+              <li
+                key={step.n}
+                className="process-card reveal"
+                style={{ transitionDelay: `${i * 70}ms` }}
+              >
+                <span className="process-card__n mono">{step.n}</span>
+                <h3>{step.t}</h3>
+                <p>{step.d}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="section cta-band">
+        <div className="container-page cta-band__inner reveal">
+          <div>
+            <h2 className="section-title">필요한 시스템을<br />소스 단위로 검토하세요</h2>
+            <p className="section-lead">요구사항과 운영 환경을 알려주시면 적합한 모듈과 라이선스 범위를 제안합니다.</p>
+          </div>
+          <div className="cta-band__actions">
+            <Button
+              size="lg"
+              className="bg-brand text-brand-foreground hover:bg-brand/90"
+              onClick={openModal}
+            >
+              상담 요청
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link to="/license">라이선스 안내</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
   );
-};
-
-export default Home;
+}
